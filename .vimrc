@@ -40,19 +40,45 @@ Plug 'vim-airline/vim-airline'
 
 "Search Files
 Plug 'kien/ctrlp.vim'
+Plug 'skwp/greplace.vim'
 
 "Ruby on Rails
 Plug 'vim-ruby/vim-ruby' "For ruby support
+Plug 'tpope/vim-rails'
 Plug 'ervandew/supertab' "insert completions
 Plug 'tpope/vim-endwise' "Add end after
+Plug 'thoughtbot/vim-rspec'
+
+Plug 'tpope/vim-surround'
+
+
 call plug#end()
 
 let g:SuperTabCrMapping = 1 "Not adding empty line after supertab autocomplete
 
+set hlsearch
 set number
 
 colorscheme solarized
 
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
+set tags=./tags;
+
+" Use sck instead of grep
+set grepprg=ack
+let g:grep_cmd_opts = '--noheading'
+let g:ackprg = 'ag --nogroup --nocolor --column'
+
+set splitright
+
+let g:rspec_command = "!clear && bundle exec rspec {spec}"
+
+nnoremap <leader>. :CtrlPTag<cr>
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
+nmap <Leader>bi :source ~/.vimrc<cr>:PlugInstall<cr>
+map <Leader>rd :!bundle exec rspec % --format documentation<CR>
+nmap <Leader>n :NERDTreeFind<CR>
+nmap <Leader>m :NERDTreeToggle<CR>
+
