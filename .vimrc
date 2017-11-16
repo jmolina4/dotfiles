@@ -1,7 +1,7 @@
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-
+autocmd BufWritePre * %s/\s\+$//e
 set autoread "Refresh files automatically
 
 syntax enable
@@ -13,6 +13,7 @@ set directory^=$HOME/.vim/tmp//
 "Shortcut for nerdTree
 let mapleader = ","
 nmap <leader>ne :NERDTree<cr>
+let NERDTreeShowHidden=1
 
 autocmd FileType ruby setlocal expandtab shiftwidth=2 tabstop=2 "Set tab 2 spaces
 set expandtab "When click tab, set 2 spaces
@@ -21,7 +22,7 @@ set expandtab "When click tab, set 2 spaces
 " - For Neovim: ~/.local/share/nvim/plugged
 " - Avoid using standard Vim directory names like 'plugin'
 call plug#begin('~/.vim/plugins')
-Plug 'scrooloose/nerdtree' 
+Plug 'scrooloose/nerdtree'
 
 "Git
 Plug 'Xuyuanp/nerdtree-git-plugin' "For git files in nerd_tree
@@ -72,6 +73,17 @@ set splitright
 
 let g:rspec_command = "!clear && bundle exec rspec {spec}"
 
+"Rubocop
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_ruby_checkers = ['rubocop']
+
+" Highlight words under cursor
+autocmd CursorMoved * exe printf('match IncSearch /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+
 nnoremap <leader>. :CtrlPTag<cr>
 map <Leader>t :call RunCurrentSpecFile()<CR>
 map <Leader>s :call RunNearestSpec()<CR>
@@ -81,4 +93,4 @@ nmap <Leader>bi :source ~/.vimrc<cr>:PlugInstall<cr>
 map <Leader>rd :!bundle exec rspec % --format documentation<CR>
 nmap <Leader>n :NERDTreeFind<CR>
 nmap <Leader>m :NERDTreeToggle<CR>
-
+nmap <Leader>r :RuboCop<CR>
